@@ -1,0 +1,1464 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark light">
+  <title>Jay Dave — Agentic AI Engineer</title>
+  <meta name="description" content="Jay Dave — AI Agentic Systems, RAG, Orchestration, AWS, Microservices. Interactive portfolio." />
+  <style>
+    /* ========== Design Tokens ========== */
+    :root{
+      --bg: #070A10;
+      --bg2:#090E18;
+      --card:#0D1324cc;
+      --card2:#0B1020cc;
+      --text:#EAF0FF;
+      --muted:#A8B3D6;
+      --faint:#7C87AE;
+      --border: rgba(255,255,255,.10);
+      --glow: rgba(152, 213, 255, .22);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --shadow2: 0 10px 28px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 1100px;
+      --pad: 22px;
+
+      --a1: 190 95% 65%;  /* cyan */
+      --a2: 270 92% 70%;  /* violet */
+      --a3: 22 98% 65%;   /* orange */
+
+      --accent: hsl(var(--a1));
+      --accent2:hsl(var(--a2));
+      --accent3:hsl(var(--a3));
+
+      --grid: linear-gradient(to right, rgba(255,255,255,.05) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+    }
+
+    [data-theme="light"]{
+      --bg:#F6F8FF;
+      --bg2:#EEF2FF;
+      --card:#FFFFFFcc;
+      --card2:#FFFFFFcc;
+      --text:#0A1030;
+      --muted:#3A436A;
+      --faint:#6470A3;
+      --border: rgba(10,16,48,.12);
+      --glow: rgba(0, 153, 255, .16);
+      --shadow: 0 18px 50px rgba(10,16,48,.16);
+      --shadow2: 0 10px 28px rgba(10,16,48,.12);
+    }
+
+    /* ========== Base ========== */
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 18% 10%, rgba(0,190,255,.18), transparent 55%),
+        radial-gradient(1000px 500px at 82% 18%, rgba(156,73,255,.16), transparent 55%),
+        radial-gradient(900px 600px at 60% 92%, rgba(255,145,0,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width: var(--max); margin:0 auto; padding: 0 var(--pad); }
+
+    /* Background grid + noise */
+    .bg-grid{
+      position: fixed; inset:0; pointer-events:none; z-index:-2;
+      background-size: 64px 64px;
+      background-image: var(--grid);
+      opacity:.26;
+      mask-image: radial-gradient(500px 450px at 20% 15%, #000 20%, transparent 70%),
+                  radial-gradient(520px 460px at 80% 25%, #000 16%, transparent 70%),
+                  radial-gradient(700px 520px at 55% 92%, #000 18%, transparent 70%);
+    }
+    .bg-noise{
+      position:fixed; inset:0; pointer-events:none; z-index:-1;
+      opacity:.11;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    /* ========== Top Nav ========== */
+    .topbar{
+      position: sticky; top:0; z-index: 50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(5,8,15,.72), rgba(5,8,15,.35));
+      border-bottom: 1px solid var(--border);
+    }
+    [data-theme="light"] .topbar{
+      background: linear-gradient(180deg, rgba(246,248,255,.88), rgba(246,248,255,.58));
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 12px 0;
+      gap: 12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width: 210px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius: 12px;
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.42), transparent 55%),
+        linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 10px 30px var(--glow);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .brand .t1{ font-weight: 720; letter-spacing:.2px; }
+    .brand .t2{ color: var(--muted); font-size: 12px; margin-top:-2px; }
+
+    .navlinks{
+      display:flex; align-items:center; justify-content:center;
+      gap: 14px; flex: 1;
+    }
+    .navlinks a{
+      font-size: 13px;
+      color: var(--muted);
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: .18s ease;
+      position: relative;
+    }
+    .navlinks a:hover{
+      color: var(--text);
+      border-color: var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .navlinks a.active{
+      color: var(--text);
+      border-color: rgba(255,255,255,.14);
+      background:
+        radial-gradient(600px 120px at 50% 0%, rgba(0,190,255,.18), transparent 65%),
+        rgba(255,255,255,.04);
+    }
+
+    .actions{ display:flex; align-items:center; gap:10px; min-width: 210px; justify-content:flex-end; }
+    .btn{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.16); }
+    .btn.primary{
+      border-color: rgba(0,190,255,.35);
+      background:
+        radial-gradient(800px 120px at 30% 0%, rgba(0,190,255,.22), transparent 70%),
+        linear-gradient(135deg, rgba(0,190,255,.16), rgba(160,70,255,.12));
+      box-shadow: 0 14px 40px rgba(0,190,255,.10);
+    }
+
+    /* Progress bar */
+    .progress{
+      height: 2px; width:100%;
+      background: rgba(255,255,255,.06);
+      position: relative;
+      overflow:hidden;
+    }
+    .progress > i{
+      position:absolute; inset:0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+      box-shadow: 0 0 24px rgba(0,190,255,.28);
+      transition: width .08s linear;
+    }
+
+    /* ========== Hero ========== */
+    header.hero{
+      padding: 34px 0 10px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 900px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .actions, .brand{ min-width:auto; }
+      .navlinks{ display:none; }
+    }
+
+    .panel{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
+    .panel::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 220px at 20% 0%, rgba(0,190,255,.18), transparent 70%),
+        radial-gradient(520px 220px at 90% 10%, rgba(156,73,255,.14), transparent 70%),
+        radial-gradient(520px 220px at 50% 110%, rgba(255,145,0,.10), transparent 70%);
+      opacity: .75;
+      pointer-events:none;
+    }
+    .panel > .in{ position:relative; padding: 22px; }
+
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 13px;
+      width: fit-content;
+    }
+    .dot{
+      width: 8px; height: 8px; border-radius: 99px;
+      background: var(--accent);
+      box-shadow: 0 0 22px rgba(0,190,255,.50);
+    }
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(28px, 3.6vw, 44px);
+      line-height: 1.06;
+      letter-spacing: -.6px;
+    }
+    .sub{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 62ch;
+    }
+    .heroBadges{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top: 16px;
+    }
+    .badge{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 9px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex; gap:8px; align-items:center;
+    }
+    .badge b{ color: var(--text); font-weight: 650; }
+    .badge i{
+      width: 10px; height: 10px; border-radius: 99px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 16px rgba(0,190,255,.22);
+    }
+
+    /* Hero right: photo + terminal */
+    .profileTop{
+      display:flex; gap:14px; align-items:center;
+    }
+    .avatar{
+      width: 72px; height: 72px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 36px var(--glow);
+      overflow:hidden;
+      background: rgba(255,255,255,.05);
+      flex:0 0 auto;
+    }
+    .avatar img{
+      width:100%; height:100%; object-fit:cover;
+      display:block;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .who{
+      min-width:0;
+    }
+    .who .name{ font-weight: 760; letter-spacing:.2px; }
+    .who .meta{ color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 10px; }
+    .chip{
+      font-size: 12px;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+
+    .terminal{
+      margin-top: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+      box-shadow: var(--shadow2);
+    }
+    [data-theme="light"] .terminal{ background: rgba(10,16,48,.05); }
+    .termTop{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .lights{ display:flex; gap:7px; }
+    .lights span{
+      width:10px; height:10px; border-radius: 99px;
+      background: rgba(255,255,255,.16);
+    }
+    .termBody{
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: rgba(234,240,255,.92);
+      min-height: 140px;
+    }
+    [data-theme="light"] .termBody{ color: rgba(10,16,48,.86); }
+    .caret{
+      display:inline-block; width: 8px; height: 14px;
+      background: currentColor;
+      opacity:.8; vertical-align: -2px;
+      animation: blink 1s steps(1) infinite;
+      margin-left: 3px;
+    }
+    @keyframes blink{ 50%{opacity:0;} }
+
+    /* ========== Sections ========== */
+    section{
+      padding: 22px 0;
+    }
+    .sectionTitle{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap: 14px;
+      margin: 18px 0 14px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: .2px;
+    }
+    .sectionTitle p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 900px){ .grid2{ grid-template-columns:1fr; } }
+
+    .card{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      position:relative;
+    }
+    .card .in{ padding: 16px; position:relative; }
+    .card .hdr{
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .titleRow{
+      display:flex; align-items:center; gap:10px; min-width:0;
+    }
+    .ic{
+      width: 34px; height: 34px; border-radius: 14px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.32), transparent 58%),
+        linear-gradient(135deg, rgba(0,190,255,.18), rgba(160,70,255,.12));
+      box-shadow: 0 14px 34px rgba(0,190,255,.10);
+      display:grid; place-items:center;
+    }
+    .ic svg{ opacity:.9; }
+    .card h3{ margin:0; font-size: 15px; letter-spacing:.2px; }
+    .card .small{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .pill{
+      font-size: 11px;
+      color: var(--muted);
+      padding: 7px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      white-space: nowrap;
+    }
+    .list{
+      margin: 10px 0 0;
+      padding-left: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .list li{ margin: 6px 0; }
+
+    /* ========== Agent Graph ========== */
+    .graphWrap{
+      padding: 0;
+    }
+    .graphTop{
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    }
+    .graphTop .hint{ color: var(--muted); font-size: 12.5px; }
+    .graphCanvas{
+      position:relative;
+      padding: 14px;
+      height: 360px;
+      background:
+        radial-gradient(600px 260px at 25% 12%, rgba(0,190,255,.10), transparent 60%),
+        radial-gradient(600px 260px at 85% 22%, rgba(156,73,255,.09), transparent 60%),
+        rgba(255,255,255,.02);
+    }
+    .node{
+      position:absolute;
+      transform: translate(-50%, -50%);
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      box-shadow: 0 18px 40px rgba(0,0,0,.25);
+      min-width: 140px;
+      cursor:pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      user-select:none;
+    }
+    .node:hover{ transform: translate(-50%,-50%) scale(1.02); border-color: rgba(255,255,255,.18); }
+    .node.active{
+      border-color: rgba(0,190,255,.45);
+      box-shadow: 0 24px 60px rgba(0,190,255,.10);
+      background:
+        radial-gradient(500px 120px at 20% 0%, rgba(0,190,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    }
+    .node .k{ font-size: 11px; color: var(--muted); }
+    .node .v{ font-weight: 720; margin-top: 2px; }
+    .node .t{ font-size: 11px; color: var(--faint); margin-top: 2px; }
+
+    .graphSvg{
+      position:absolute; inset: 0;
+      width:100%; height:100%;
+      pointer-events:none;
+      opacity: .85;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,.22));
+    }
+    .edge{
+      stroke: rgba(255,255,255,.18);
+      stroke-width: 1.2;
+      fill:none;
+    }
+    .edge.hot{
+      stroke: rgba(0,190,255,.42);
+      stroke-width: 1.6;
+    }
+    .pulse{
+      stroke: rgba(0,190,255,.38);
+      stroke-width: 2.2;
+      stroke-dasharray: 4 8;
+      animation: dash 2.4s linear infinite;
+    }
+    @keyframes dash{
+      to{ stroke-dashoffset: -24; }
+    }
+    .detail{
+      position:absolute;
+      right: 12px; bottom: 12px;
+      width: min(360px, calc(100% - 24px));
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.10));
+      backdrop-filter: blur(12px);
+      padding: 12px;
+      box-shadow: var(--shadow2);
+    }
+    [data-theme="light"] .detail{ background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.62)); }
+    .detail .h{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .detail .h b{ font-size: 13px; }
+    .detail .h span{ font-size: 11px; color: var(--muted); border:1px solid var(--border); padding: 6px 8px; border-radius: 999px; }
+    .detail .p{ margin: 10px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+
+    /* ========== Tool Shelf ========== */
+    .tools{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    .tool{
+      grid-column: span 4;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: var(--shadow2);
+      padding: 14px;
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: .5s cubic-bezier(.2,.8,.2,1);
+    }
+    .tool.show{ transform: translateY(0); opacity: 1; }
+    .tool::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(420px 160px at var(--mx,50%) 0%, rgba(0,190,255,.14), transparent 55%),
+        radial-gradient(420px 160px at calc(var(--mx,50%) + 20%) 10%, rgba(156,73,255,.10), transparent 55%);
+      opacity:.8;
+      pointer-events:none;
+    }
+    .tool .tIn{ position:relative; display:flex; gap:10px; }
+    .tool .tIcon{
+      width: 36px; height: 36px; border-radius: 14px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(16px 16px at 30% 30%, rgba(255,255,255,.30), transparent 58%),
+        linear-gradient(135deg, rgba(0,190,255,.16), rgba(255,145,0,.10));
+      display:grid; place-items:center;
+      flex:0 0 auto;
+    }
+    .tool h4{ margin:0; font-size: 14px; letter-spacing:.2px; }
+    .tool p{ margin: 6px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+    .tool .tagRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
+    .tag{
+      font-size: 11px;
+      color: var(--muted);
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+    @media (max-width: 900px){
+      .tool{ grid-column: span 6; }
+    }
+    @media (max-width: 560px){
+      .tool{ grid-column: span 12; }
+    }
+
+    /* ========== Timeline ========== */
+    .timeline{
+      position:relative;
+      padding-left: 18px;
+    }
+    .timeline::before{
+      content:"";
+      position:absolute;
+      left: 6px; top: 6px; bottom: 6px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(0,190,255,.40), rgba(156,73,255,.22), rgba(255,145,0,.18));
+      opacity:.8;
+    }
+    .tItem{
+      position:relative;
+      margin: 12px 0;
+      padding: 14px 14px 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: var(--shadow2);
+      transform: translateY(10px);
+      opacity: 0;
+      transition: .5s cubic-bezier(.2,.8,.2,1);
+    }
+    .tItem.show{ transform: translateY(0); opacity: 1; }
+    .tItem::before{
+      content:"";
+      position:absolute;
+      left: -18px; top: 18px;
+      width: 12px; height: 12px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(0,190,255,.28);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tHead{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 10px;
+    }
+    .tHead b{ font-size: 14px; }
+    .tHead .when{
+      font-size: 11px; color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 7px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      background: rgba(255,255,255,.03);
+    }
+    .tRole{ margin-top: 6px; color: var(--muted); font-size: 12.5px; }
+    .tBullets{ margin: 10px 0 0; padding-left: 16px; color: var(--muted); font-size: 12.8px; line-height: 1.55; }
+    .tBullets li{ margin: 6px 0; }
+
+    /* ========== Contact ========== */
+    footer{
+      padding: 28px 0 40px;
+      color: var(--muted);
+    }
+    .contactRow{
+      display:flex; flex-wrap:wrap;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .contactRow a{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      transition: .18s ease;
+    }
+    .contactRow a:hover{
+      background: rgba(255,255,255,.06);
+      transform: translateY(-1px);
+    }
+
+    /* ========== Scroll Reveal ========== */
+    .reveal{
+      transform: translateY(10px);
+      opacity: 0;
+      transition: .6s cubic-bezier(.2,.8,.2,1);
+    }
+    .reveal.show{ transform: translateY(0); opacity: 1; }
+
+    /* ========== Floating “Back to top” ========== */
+    .fab{
+      position: fixed;
+      right: 18px; bottom: 18px;
+      z-index: 80;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .fab .btn{ padding: 11px 12px; border-radius: 16px; }
+    .fab small{
+      color: var(--muted);
+      font-size: 11px;
+      text-align:right;
+      opacity:.85;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+
+  <div class="topbar">
+    <div class="progress"><i id="progressBar"></i></div>
+    <div class="wrap">
+      <div class="nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div class="t1">Jay Dave</div>
+            <div class="t2">Agentic AI • RAG • Orchestration • AWS</div>
+          </div>
+        </div>
+
+        <nav class="navlinks" aria-label="Primary">
+          <a href="#agentic" data-spy>Agentic</a>
+          <a href="#tools" data-spy>Tooling</a>
+          <a href="#experience" data-spy>Experience</a>
+          <a href="#contact" data-spy>Contact</a>
+        </nav>
+
+        <div class="actions">
+          <button class="btn" id="themeBtn" title="Toggle theme">
+            <span aria-hidden="true">◐</span><span>Theme</span>
+          </button>
+          <a class="btn primary" href="#contact" title="Let’s talk">
+            <span aria-hidden="true">✦</span><span>Work with me</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="heroGrid">
+        <div class="panel reveal">
+          <div class="in">
+            <div class="kicker"><span class="dot"></span><span id="liveStatus">Building agentic systems that ship</span></div>
+            <h1>
+              I build <span style="background:linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent;">agentic AI workflows</span>
+              that move from prompt → planning → tools → verifiable outputs.
+            </h1>
+            <p class="sub">
+              RAG pipelines, event-driven orchestration, and production-grade microservices on AWS.
+              I optimize for latency, retrieval quality, and system clarity — not demos.
+            </p>
+
+            <div class="heroBadges" aria-label="Highlights">
+              <div class="badge"><i></i> <b>RAG</b> vector + elastic search</div>
+              <div class="badge"><i></i> <b>Orchestration</b> SQS + Redis</div>
+              <div class="badge"><i></i> <b>CI/CD</b> Jenkins + Docker + EKS</div>
+              <div class="badge"><i></i> <b>APIs</b> REST + GraphQL</div>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+              <a class="btn" href="#agentic">See agentic blueprint</a>
+              <a class="btn" href="#experience">View impact & metrics</a>
+              <a class="btn" id="copyPitch" href="javascript:void(0)">Copy 1-liner</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel reveal">
+          <div class="in">
+            <div class="profileTop">
+              <div class="avatar" title="Place your image at ./jay.jpg (same folder)">
+                <!-- Put your photo in the same repo folder and name it jay.jpg (or update path). -->
+                <img src="./jay.jpg" alt="Jay Dave photo" onerror="this.style.display='none'; this.parentElement.style.display='grid'; this.parentElement.style.placeItems='center'; this.parentElement.innerHTML='<span style=&quot;color:var(--muted); font-size:12px; padding:10px; text-align:center;&quot;>Add your photo:<br><b>./jay.jpg</b></span>';">
+              </div>
+              <div class="who">
+                <div class="name">Jay Dave</div>
+                <div class="meta">New York, USA • Software Engineer</div>
+                <div class="chips">
+                  <span class="chip">Python</span>
+                  <span class="chip">TypeScript</span>
+                  <span class="chip">AWS</span>
+                  <span class="chip">Agents</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="terminal" aria-label="Terminal">
+              <div class="termTop">
+                <div class="lights" aria-hidden="true"><span></span><span></span><span></span></div>
+                <div>agent-runtime / cli</div>
+                <div style="opacity:.7">live</div>
+              </div>
+              <div class="termBody">
+                <div id="termText"></div><span class="caret" aria-hidden="true"></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Agentic ===== -->
+  <section id="agentic">
+    <div class="wrap">
+      <div class="sectionTitle reveal">
+        <div>
+          <h2>Agentic workflow blueprint</h2>
+          <p>Click nodes to see how the system behaves under real constraints.</p>
+        </div>
+        <span class="pill">Interactive graph</span>
+      </div>
+
+      <div class="card graphWrap reveal">
+        <div class="graphTop">
+          <div class="hint">Pattern: Coordinator → Specialists → Tool calls → Memory → Audit</div>
+          <button class="btn" id="simulateBtn"><span aria-hidden="true">▶</span> Simulate run</button>
+        </div>
+
+        <div class="graphCanvas" id="graph">
+          <svg class="graphSvg" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
+            <path id="e1" class="edge" d="M170,120 C300,110 330,120 430,140"></path>
+            <path id="e2" class="edge" d="M470,170 C520,220 560,240 650,250"></path>
+            <path id="e3" class="edge" d="M470,170 C520,140 560,130 650,120"></path>
+            <path id="e4" class="edge" d="M690,140 C760,150 800,170 840,210"></path>
+            <path id="e5" class="edge" d="M690,270 C760,280 800,260 840,230"></path>
+            <path id="e6" class="edge" d="M870,230 C900,270 900,330 850,370"></path>
+            <path id="pulse" class="edge pulse" d="M170,120 C300,110 330,120 430,140"></path>
+          </svg>
+
+          <!-- Nodes (absolute positioned; JS sets coordinates and syncs edges “hot” state) -->
+          <div class="node" data-node="ingest" style="left:18%; top:22%;">
+            <div class="k">Input</div><div class="v">User / Event</div><div class="t">query, files, actions</div>
+          </div>
+
+          <div class="node" data-node="coord" style="left:44%; top:26%;">
+            <div class="k">Orchestrator</div><div class="v">Coordinator</div><div class="t">plans + routes</div>
+          </div>
+
+          <div class="node" data-node="retrieval" style="left:66%; top:23%;">
+            <div class="k">Specialist</div><div class="v">Retriever</div><div class="t">vector + elastic</div>
+          </div>
+
+          <div class="node" data-node="tools" style="left:66%; top:52%;">
+            <div class="k">Specialist</div><div class="v">Tool Runner</div><div class="t">APIs / DB / queue</div>
+          </div>
+
+          <div class="node" data-node="memory" style="left:86%; top:42%;">
+            <div class="k">State</div><div class="v">Session Memory</div><div class="t">Redis / store</div>
+          </div>
+
+          <div class="node" data-node="audit" style="left:86%; top:72%;">
+            <div class="k">Guardrail</div><div class="v">Audit Trail</div><div class="t">trace + metrics</div>
+          </div>
+
+          <div class="detail" id="detail">
+            <div class="h">
+              <b id="detailTitle">Coordinator</b>
+              <span id="detailTag">routing</span>
+            </div>
+            <p class="p" id="detailText">
+              Turns a vague request into a plan, routes tasks to specialists, and enforces constraints
+              (latency budget, tool policies, and confidence thresholds).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card reveal">
+          <div class="in">
+            <div class="hdr">
+              <div class="titleRow">
+                <div class="ic" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3>What I optimize for</h3>
+                  <p class="small">Not “agent vibes” — measurable production outcomes.</p>
+                </div>
+              </div>
+              <span class="pill">Metrics-first</span>
+            </div>
+            <ul class="list">
+              <li>Retrieval quality: precision/recall, reranking, failure modes.</li>
+              <li>Latency: orchestration overhead, queue fan-out, caching strategy.</li>
+              <li>Reliability: idempotency, retries, backpressure, timeouts.</li>
+              <li>Auditability: traces, tool logs, deterministic replay hooks.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="in">
+            <div class="hdr">
+              <div class="titleRow">
+                <div class="ic" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 7h16M4 12h10M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3>How I build agents</h3>
+                  <p class="small">A pragmatic pattern for shipping + evolving.</p>
+                </div>
+              </div>
+              <span class="pill">System design</span>
+            </div>
+            <ul class="list">
+              <li>Coordinator + specialists (retrieval, tools, validation).</li>
+              <li>Event-driven orchestration (SQS) with clear contracts.</li>
+              <li>State management (Redis/session store) + durable logs.</li>
+              <li>CI/CD for agent changes (tests, evals, rollout gates).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Tools ===== -->
+  <section id="tools">
+    <div class="wrap">
+      <div class="sectionTitle reveal">
+        <div>
+          <h2>Tooling shelf</h2>
+          <p>Hover to “light” the card. Click to pin + read the use-case.</p>
+        </div>
+        <span class="pill">Scroll-animated</span>
+      </div>
+
+      <div class="tools" id="toolGrid">
+        <!-- Tool cards injected by JS -->
+      </div>
+
+      <div class="card reveal" style="margin-top:14px;">
+        <div class="in">
+          <div class="hdr">
+            <div class="titleRow">
+              <div class="ic" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div>
+                <h3>Skills snapshot</h3>
+                <p class="small">Languages • Backend/Frontend • Cloud & Infra</p>
+              </div>
+            </div>
+            <span class="pill">Fast scan</span>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="tag">Java</span>
+            <span class="tag">Python</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">SQL</span>
+            <span class="tag">GraphQL</span>
+            <span class="tag">Django</span>
+            <span class="tag">Spring Boot</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Microservices</span>
+            <span class="tag">React</span>
+            <span class="tag">AWS</span>
+            <span class="tag">Docker</span>
+            <span class="tag">Kubernetes</span>
+            <span class="tag">Jenkins</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Redis</span>
+            <span class="tag">Kafka</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Experience ===== -->
+  <section id="experience">
+    <div class="wrap">
+      <div class="sectionTitle reveal">
+        <div>
+          <h2>Experience with outcomes</h2>
+          <p>Impact bullets (latency, accuracy, retention) — not generic responsibilities.</p>
+        </div>
+        <span class="pill">Timeline</span>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <div class="tItem">
+          <div class="tHead">
+            <div>
+              <b>Consultadd Inc</b>
+              <div class="tRole">Software Engineer • Remote</div>
+            </div>
+            <div class="when">Jul 2025 – Present</div>
+          </div>
+          <ul class="tBullets">
+            <li>Built scalable agentic workflows for a civil-litigation AI platform; improved retrieval accuracy by ~30% via RAG + vector search + Elasticsearch.</li>
+            <li>Reduced inter-service latency by ~40% using event-driven orchestration (Coordinator ↔ task agents) with AWS SQS and Redis session management.</li>
+            <li>Accelerated release cycles by ~25% through multi-branch CI/CD pipelines (Jenkins, Docker, ArgoCD) on AWS EKS with automated testing.</li>
+          </ul>
+        </div>
+
+        <div class="tItem">
+          <div class="tHead">
+            <div>
+              <b>Bright Mind Enrichment and Schooling</b>
+              <div class="tRole">Software Engineer • Jersey City, NJ</div>
+            </div>
+            <div class="when">Jul 2024 – Jun 2025</div>
+          </div>
+          <ul class="tBullets">
+            <li>Improved API performance by ~25% using async REST + GraphQL services in Django, with Redis caching and query optimization.</li>
+            <li>Increased user retention by ~30% and reduced page load time by ~35% via responsive React UI and real-time updates.</li>
+          </ul>
+        </div>
+
+        <div class="tItem">
+          <div class="tHead">
+            <div>
+              <b>Flash Tech Company</b>
+              <div class="tRole">Backend Developer Level 2 • Gujarat, India</div>
+            </div>
+            <div class="when">Mar 2021 – Aug 2022</div>
+          </div>
+          <ul class="tBullets">
+            <li>Refactored a monolith into microservices (Django REST, Celery, Kubernetes), raising throughput by ~40% and improving deployment isolation.</li>
+            <li>Reduced downtime by ~25% and compute usage by ~20% through SQL optimization, Redis caching, gRPC services, and monitoring.</li>
+          </ul>
+        </div>
+
+        <div class="tItem">
+          <div class="tHead">
+            <div>
+              <b>Awaaz De Informatics Ltd</b>
+              <div class="tRole">Junior Software Engineer • Gujarat, India</div>
+            </div>
+            <div class="when">Jan 2020 – Feb 2021</div>
+          </div>
+          <ul class="tBullets">
+            <li>Built multilingual voice + SMS systems supporting 60+ use cases across 10+ languages; scaled daily call volume from ~50K to ~300K while reducing latency by ~30%.</li>
+            <li>Improved observability via Prometheus/Grafana and cross-functional API design/documentation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card reveal">
+          <div class="in">
+            <div class="hdr">
+              <div class="titleRow">
+                <div class="ic" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M4 4h4M16 4h4M4 20h4M16 20h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3>Education</h3>
+                  <p class="small">Strong systems + software engineering foundation.</p>
+                </div>
+              </div>
+              <span class="pill">Academics</span>
+            </div>
+            <ul class="list">
+              <li>Stevens Institute of Technology — M.S. Software Engineering (GPA: 3.98)</li>
+              <li>DA-IICT — B.Tech ICT</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="in">
+            <div class="hdr">
+              <div class="titleRow">
+                <div class="ic" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3l7 4v10l-7 4-7-4V7l7-4z" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M12 7v10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3>Certification</h3>
+                  <p class="small">AWS Certified AI Practitioner (Credly)</p>
+                </div>
+              </div>
+              <span class="pill">Verified</span>
+            </div>
+            <p class="small">
+              Add your Credly verification link here (button below is a placeholder).
+            </p>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn" href="#" onclick="alert('Replace this link with your Credly URL'); return false;">Credly Verification</a>
+              <button class="btn" id="downloadResume">Download resume (optional)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sectionTitle reveal">
+        <div>
+          <h2>Contact</h2>
+          <p>Fastest way to reach me: email. For code: GitHub.</p>
+        </div>
+        <span class="pill">Open to work</span>
+      </div>
+
+      <div class="card reveal">
+        <div class="in">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div>
+              <h3 style="margin:0 0 6px;">Let’s build something agentic and shippable.</h3>
+              <p class="small" style="max-width:70ch;">
+                If you’re evaluating “AI agents”, I can help you avoid the usual failure modes:
+                undefined tool contracts, no evals, no audit trail, and orchestration that collapses at scale.
+              </p>
+              <div class="contactRow">
+                <a href="mailto:davejay1999@gmail.com">davejay1999@gmail.com</a>
+                <a href="tel:+15513284697">+1 (551) 328-4697</a>
+                <a href="#" onclick="alert('Replace with your LinkedIn URL'); return false;">LinkedIn</a>
+                <a href="#" onclick="alert('Replace with your GitHub URL'); return false;">GitHub</a>
+              </div>
+            </div>
+            <div style="min-width:260px; flex:1; max-width:360px;">
+              <div class="terminal" style="margin-top:0;">
+                <div class="termTop">
+                  <div class="lights" aria-hidden="true"><span></span><span></span><span></span></div>
+                  <div>availability</div>
+                  <div style="opacity:.7">status</div>
+                </div>
+                <div class="termBody" id="availabilityBox" style="min-height:auto;">
+                  <div style="color:var(--muted);">Current focus:</div>
+                  <div style="margin-top:6px;">• Agentic RAG systems</div>
+                  <div>• AWS orchestration (SQS/Redis)</div>
+                  <div>• Microservices & CI/CD</div>
+                  <div style="margin-top:10px; color:var(--muted);">If you need:</div>
+                  <div style="margin-top:6px;">→ faster latency, higher retrieval quality, clean architectures</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px; border-top:1px solid var(--border); padding-top:12px; color:var(--muted); font-size:12px;">
+            © <span id="year"></span> Jay Dave • Built as a single-file, GitHub-friendly portfolio.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="fab" aria-label="Quick actions">
+    <button class="btn" id="toTop" title="Back to top">↑</button>
+    <small id="scrollHint">scroll</small>
+  </div>
+
+  <script>
+    /* =========================
+       1) Theme
+    ========================= */
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+
+    function setTheme(mode){
+      root.setAttribute('data-theme', mode);
+      localStorage.setItem('jay_theme', mode);
+      themeBtn.querySelector('span:nth-child(2)').textContent = mode === 'light' ? 'Light' : 'Dark';
+    }
+    const saved = localStorage.getItem('jay_theme');
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    setTheme(saved || (prefersLight ? 'light' : 'dark'));
+
+    themeBtn.addEventListener('click', () => {
+      const cur = root.getAttribute('data-theme');
+      setTheme(cur === 'light' ? 'dark' : 'light');
+    });
+
+    /* =========================
+       2) Scroll progress + back-to-top
+    ========================= */
+    const bar = document.getElementById('progressBar');
+    const toTop = document.getElementById('toTop');
+    const scrollHint = document.getElementById('scrollHint');
+
+    function onScroll(){
+      const h = document.documentElement;
+      const max = (h.scrollHeight - h.clientHeight) || 1;
+      const p = Math.min(1, Math.max(0, h.scrollTop / max));
+      bar.style.width = (p*100).toFixed(2) + '%';
+
+      scrollHint.textContent = p < 0.02 ? 'scroll' : (p > 0.98 ? 'end' : Math.round(p*100) + '%');
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+
+    toTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+    /* =========================
+       3) Reveal on scroll + nav spy
+    ========================= */
+    const revealEls = [...document.querySelectorAll('.reveal, .tItem')];
+    const spyLinks = [...document.querySelectorAll('[data-spy]')];
+    const sections = spyLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(e.isIntersecting) e.target.classList.add('show');
+      });
+    }, { threshold: 0.14 });
+
+    revealEls.forEach(el => io.observe(el));
+
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(!e.isIntersecting) return;
+        const id = '#' + e.target.id;
+        spyLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+      });
+    }, { threshold: 0.45 });
+
+    sections.forEach(s => spy.observe(s));
+
+    /* =========================
+       4) Terminal typing (hero)
+    ========================= */
+    const termText = document.getElementById('termText');
+    const scriptLines = [
+      { t: "jay@agent-runtime:~$ ", cls: "m" },
+      { t: "run --goal \"Improve retrieval quality\" --constraints \"<300ms P95\" \n", cls:"" },
+      { t: "→ Plan: route to Retriever → validate → cache → respond\n", cls:"" },
+      { t: "→ Tools: vector_search(), elastic_query(), rerank(), trace()\n", cls:"" },
+      { t: "→ Orchestration: SQS fan-out, Redis session state\n", cls:"" },
+      { t: "→ Output: cited answer + audit trail\n", cls:"" },
+      { t: "\nstatus: ", cls:"m" },
+      { t: "READY", cls:"ok" },
+    ];
+
+    const styles = document.createElement('style');
+    styles.textContent = `
+      .m{ color: rgba(168,179,214,.95); }
+      .ok{ color: rgba(0,190,255,.95); font-weight:700; }
+    `;
+    document.head.appendChild(styles);
+
+    let li=0, ci=0;
+    function typeTick(){
+      if(li >= scriptLines.length) return;
+      const line = scriptLines[li];
+      const ch = line.t.charAt(ci++);
+      if(ch){
+        const span = document.createElement('span');
+        if(line.cls) span.className = line.cls;
+        span.textContent = ch;
+        termText.appendChild(span);
+      }else{
+        li++; ci=0;
+      }
+      if(termText.childNodes.length > 2000) termText.textContent = '';
+      setTimeout(typeTick, 12 + Math.random()*18);
+    }
+    typeTick();
+
+    /* =========================
+       5) Copy 1-liner
+    ========================= */
+    document.getElementById('copyPitch').addEventListener('click', async () => {
+      const pitch = "I build production-grade agentic AI workflows (RAG + orchestration + auditability) optimized for retrieval quality and latency.";
+      try{
+        await navigator.clipboard.writeText(pitch);
+        flashStatus("Copied: 1-liner ✅");
+      }catch{
+        flashStatus("Copy failed (browser blocked).");
+      }
+    });
+
+    function flashStatus(msg){
+      const el = document.getElementById('liveStatus');
+      const old = el.textContent;
+      el.textContent = msg;
+      setTimeout(() => el.textContent = old, 1400);
+    }
+
+    /* =========================
+       6) Agent graph interactions
+    ========================= */
+    const nodeInfo = {
+      ingest: {
+        title: "User / Event",
+        tag: "input",
+        text: "Normalizes user intent + UI events. In production, this is where you enforce schema, rate limits, and safe defaults (never ‘guess’ tool parameters)."
+      },
+      coord: {
+        title: "Coordinator",
+        tag: "routing",
+        text: "Builds a plan, picks specialists, and enforces constraints (latency budget, tool policy, confidence thresholds). It’s the only component allowed to orchestrate multi-step work."
+      },
+      retrieval: {
+        title: "Retriever",
+        tag: "RAG",
+        text: "Retrieves candidates via vector search + Elasticsearch; applies filters, reranking, and ‘why this chunk’ justification. Designed to minimize hallucinations by grounding."
+      },
+      tools: {
+        title: "Tool Runner",
+        tag: "execution",
+        text: "Executes external actions (APIs, DB, queue). Includes retries, idempotency keys, and timeouts. If tools are flaky, the system degrades gracefully."
+      },
+      memory: {
+        title: "Session Memory",
+        tag: "state",
+        text: "Tracks conversation/task state (often Redis). Keeps the agent consistent, but must be bounded: TTLs, size limits, and explicit ‘what is stored’ rules."
+      },
+      audit: {
+        title: "Audit Trail",
+        tag: "trace",
+        text: "Every tool call and decision is traceable (request ids, step logs, metrics). If you can’t explain why an output happened, you don’t have a production system."
+      }
+    };
+
+    const nodes = [...document.querySelectorAll('.node')];
+    const detailTitle = document.getElementById('detailTitle');
+    const detailTag = document.getElementById('detailTag');
+    const detailText = document.getElementById('detailText');
+
+    function setActiveNode(key){
+      nodes.forEach(n => n.classList.toggle('active', n.dataset.node === key));
+      const info = nodeInfo[key];
+      detailTitle.textContent = info.title;
+      detailTag.textContent = info.tag;
+      detailText.textContent = info.text;
+
+      // heat edges depending on node
+      const hot = new Set();
+      if(key === 'coord'){ hot.add('e1'); hot.add('e2'); hot.add('e3'); }
+      if(key === 'retrieval'){ hot.add('e3'); hot.add('e4'); }
+      if(key === 'tools'){ hot.add('e2'); hot.add('e5'); }
+      if(key === 'memory'){ hot.add('e4'); hot.add('e5'); hot.add('e6'); }
+      if(key === 'audit'){ hot.add('e6'); }
+      if(key === 'ingest'){ hot.add('e1'); }
+
+      ['e1','e2','e3','e4','e5','e6'].forEach(id => {
+        const p = document.getElementById(id);
+        p.classList.toggle('hot', hot.has(id));
+      });
+    }
+    nodes.forEach(n => n.addEventListener('click', () => setActiveNode(n.dataset.node)));
+    setActiveNode('coord');
+
+    // simulate run (pulse anim reroutes)
+    const simulateBtn = document.getElementById('simulateBtn');
+    const pulse = document.getElementById('pulse');
+    let simOn = false;
+    simulateBtn.addEventListener('click', () => {
+      simOn = !simOn;
+      simulateBtn.innerHTML = simOn ? "<span aria-hidden='true'>■</span> Stop" : "<span aria-hidden='true'>▶</span> Simulate run";
+      if(!simOn){
+        pulse.style.display = 'none';
+        flashStatus("Simulation stopped");
+        return;
+      }
+      pulse.style.display = 'block';
+      const routes = [
+        "M170,120 C300,110 330,120 430,140",
+        "M470,170 C520,140 560,130 650,120",
+        "M470,170 C520,220 560,240 650,250",
+        "M690,140 C760,150 800,170 840,210",
+        "M690,270 C760,280 800,260 840,230",
+        "M870,230 C900,270 900,330 850,370",
+      ];
+      let i=0;
+      const tick = () => {
+        if(!simOn) return;
+        pulse.setAttribute('d', routes[i % routes.length]);
+        i++;
+        setTimeout(tick, 620);
+      };
+      tick();
+      flashStatus("Simulating agent run…");
+    });
+
+    /* =========================
+       7) Tool shelf (dynamic cards)
+    ========================= */
+    const toolData = [
+      {
+        name: "RAG Pipeline",
+        desc: "Ground answers with vector retrieval + Elasticsearch; add reranking + citation discipline.",
+        tags: ["Vector Search","Elasticsearch","Rerank","Eval"],
+        icon: "🧠"
+      },
+      {
+        name: "Coordinator Agent",
+        desc: "Plans steps, routes tasks, enforces policy/constraints, and prevents tool chaos.",
+        tags: ["Planning","Routing","Policies","Budgets"],
+        icon: "🧭"
+      },
+      {
+        name: "Event-Driven Orchestration",
+        desc: "SQS fan-out for specialist agents; idempotent handlers; robust retries/backpressure.",
+        tags: ["AWS SQS","Idempotency","Retries","Backpressure"],
+        icon: "⚙️"
+      },
+      {
+        name: "Redis Session State",
+        desc: "Fast, bounded memory for agent state; TTLs + explicit storage rules to avoid drift.",
+        tags: ["Redis","TTL","State","Consistency"],
+        icon: "🧾"
+      },
+      {
+        name: "CI/CD for Agents",
+        desc: "Ship safely: tests + evals, staged rollout, and quick rollback for prompt/tool changes.",
+        tags: ["Jenkins","Docker","ArgoCD","EKS"],
+        icon: "🚀"
+      },
+      {
+        name: "Observability",
+        desc: "Trace tool calls, measure latency, catch retrieval regressions, and explain outputs.",
+        tags: ["Tracing","Metrics","Audit","SLO"],
+        icon: "📡"
+      }
+    ];
+
+    const toolGrid = document.getElementById('toolGrid');
+
+    function toolIconSvg(){
+      return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2l2.6 6.2L21 10.8l-6.4 2.6L12 20l-2.6-6.6L3 10.8l6.4-2.6L12 2z" stroke="currentColor" stroke-width="1.4" opacity=".9"/>
+      </svg>`;
+    }
+
+    toolData.forEach((t, idx) => {
+      const el = document.createElement('div');
+      el.className = 'tool';
+      el.tabIndex = 0;
+      el.innerHTML = `
+        <div class="tIn">
+          <div class="tIcon" aria-hidden="true" title="${t.icon}">${toolIconSvg()}</div>
+          <div style="min-width:0;">
+            <h4>${t.name}</h4>
+            <p>${t.desc}</p>
+            <div class="tagRow">
+              ${t.tags.map(x => `<span class="tag">${x}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const mx = ((e.clientX - r.left) / r.width) * 100;
+        el.style.setProperty('--mx', mx.toFixed(1) + '%');
+      });
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.tool').forEach(x => x.style.outline = 'none');
+        el.style.outline = '2px solid rgba(0,190,255,.35)';
+        flashStatus(`Pinned: ${t.name}`);
+      });
+      toolGrid.appendChild(el);
+      // staggered reveal
+      setTimeout(() => el.classList.add('show'), 220 + idx * 90);
+    });
+
+    /* =========================
+       8) Timeline reveal (staggered)
+    ========================= */
+    const tItems = [...document.querySelectorAll('.tItem')];
+    const tObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if(!e.isIntersecting) return;
+        const i = tItems.indexOf(e.target);
+        setTimeout(() => e.target.classList.add('show'), i * 120);
+      });
+    }, { threshold: 0.18 });
+    tItems.forEach(x => tObs.observe(x));
+
+    /* =========================
+       9) Resume download button (optional)
+       - If you put a PDF in your repo (e.g., resume.pdf), this will download it.
+    ========================= */
+    document.getElementById('downloadResume').addEventListener('click', () => {
+      // Put your resume file in the same folder and name it "resume.pdf"
+      // or edit the path below.
+      const url = "./resume.pdf";
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "Jay_Dave_Resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+
+    /* =========================
+       10) Year
+    ========================= */
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
