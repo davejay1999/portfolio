@@ -465,6 +465,22 @@
       opacity: .85;
       filter: drop-shadow(0 12px 24px rgba(0,0,0,.22));
     }
+.graphCanvas { position: relative; }
+
+.graphSvg{
+  position:absolute;
+  inset:0;
+  z-index: 1;        
+  pointer-events:none;
+}
+
+.node{
+  z-index: 3;      
+}
+.detail{ bottom: 14px; right: 14px; }
+.detail{
+  z-index: 2;      
+}
     .edge{
       stroke: rgba(255,255,255,.18);
       stroke-width: 1.2;
@@ -1053,7 +1069,7 @@
               https://www.credly.com/badges/5ee43885-48c2-4c68-b878-646dda1c43ff/linked_in_profile
             </p>
             <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-              <a class="btn" href="https://www.credly.com/badges/5ee43885-48c2-4c68-b878-646dda1c43ff/linked_in_profile" onclick="alert('https://www.credly.com/badges/5ee43885-48c2-4c68-b878-646dda1c43ff/linked_in_profile'); return false;">Credly Verification</a>
+              <a class="btn" href="https://www.credly.com/badges/5ee43885-48c2-4c68-b878-646dda1c43ff/linked_in_profile" target="_blank" rel="noopener noreferrer">Credly Verification</a>
               <button class="btn" id="downloadResume">Download resume (optional)</button>
             </div>
           </div>
@@ -1086,8 +1102,8 @@
               <div class="contactRow">
                 <a href="mailto:davejay1999@gmail.com">davejay1999@gmail.com</a>
                 <a href="tel:+15513284697">+1 (551) 328-4697</a>
-                <a href="https://www.linkedin.com/in/davejay1999" onclick="alert('https://www.linkedin.com/in/davejay1999'); return false;">LinkedIn</a>
-                <a href="https://github.com/davejay1999" onclick="alert('https://github.com/davejay1999'); return false;">GitHub</a>
+                <a href="https://www.linkedin.com/in/davejay1999/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a href="https://github.com/davejay1999/" target="_blank" rel="noopener noreferrer">GitHub</a>
               </div>
             </div>
             <div style="min-width:260px; flex:1; max-width:360px;">
@@ -1459,6 +1475,15 @@
        10) Year
     ========================= */
     document.getElementById('year').textContent = new Date().getFullYear();
+    // Auto-open external links in a new tab
+document.querySelectorAll('a[href]').forEach(a => {
+  const href = a.getAttribute('href');
+  if (!href) return;
+  if (href.startsWith('http://') || href.startsWith('https://')) {
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+  }
+});
   </script>
 </body>
 </html>
