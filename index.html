@@ -1,0 +1,1367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Jay Dave — Software Engineer building agentic AI workflows, RAG pipelines, and AWS orchestration." />
+  <title>Jay Dave — Agentic AI • RAG • AWS Orchestration</title>
+
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --panel:#0f1624;
+      --panel2:#0c1321;
+      --text:#e7eefc;
+      --muted:#9fb0cf;
+      --muted2:#7f91b4;
+      --line:#1c2a43;
+      --chip:#121c2f;
+      --accent:#7aa2ff;
+      --accent2:#63e6be;
+      --warn:#ffcc66;
+      --danger:#ff6b6b;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius2: 22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+    [data-theme="light"]{
+      --bg:#f7f9ff;
+      --panel:#ffffff;
+      --panel2:#f4f7ff;
+      --text:#101828;
+      --muted:#4b5568;
+      --muted2:#66758f;
+      --line:#d7dfef;
+      --chip:#eef3ff;
+      --accent:#2b59ff;
+      --accent2:#0ea5a4;
+      --shadow: 0 12px 40px rgba(16,24,40,.10);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 600px at 15% -10%, rgba(122,162,255,.25), transparent 60%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(99,230,190,.18), transparent 55%),
+                  linear-gradient(180deg, var(--bg), var(--bg));
+      color:var(--text);
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    .wrap{
+      width:min(1140px, 92vw);
+      margin:0 auto;
+    }
+
+    /* Top bar */
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: color-mix(in oklab, var(--bg) 76%, transparent);
+      border-bottom:1px solid color-mix(in oklab, var(--line) 60%, transparent);
+    }
+    .topbar .inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      text-decoration:none;
+    }
+    .logo{
+      width:34px;height:34px;border-radius:10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:-30%;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.65), transparent 55%);
+      transform: rotate(20deg);
+      opacity:.55;
+    }
+    .brand .name{
+      display:flex; flex-direction:column; line-height:1.05;
+    }
+    .brand .name strong{font-size:14px; letter-spacing:.2px}
+    .brand .name span{font-size:12px; color:var(--muted)}
+    nav{
+      display:flex; gap:8px; flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .navlink{
+      text-decoration:none;
+      font-size:13px;
+      padding:9px 10px;
+      border-radius:12px;
+      color:var(--muted);
+      border:1px solid transparent;
+      transition: all .18s ease;
+    }
+    .navlink:hover{
+      color:var(--text);
+      background: color-mix(in oklab, var(--chip) 70%, transparent);
+      border-color: color-mix(in oklab, var(--line) 70%, transparent);
+    }
+    .navlink.active{
+      color:var(--text);
+      background: color-mix(in oklab, var(--accent) 18%, transparent);
+      border-color: color-mix(in oklab, var(--accent) 35%, var(--line));
+    }
+    .btn{
+      border:1px solid color-mix(in oklab, var(--line) 80%, transparent);
+      background: color-mix(in oklab, var(--panel) 88%, transparent);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      transition: all .18s ease;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: color-mix(in oklab, var(--accent) 32%, var(--line));
+      box-shadow: var(--shadow);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 75%, #0000), color-mix(in oklab, var(--accent2) 55%, #0000));
+      border-color: transparent;
+      color:#0b0f17;
+      font-weight:700;
+    }
+    [data-theme="light"] .btn.primary{ color:#0b0f17; }
+    .btn.ghost{
+      background: transparent;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: color-mix(in oklab, var(--chip) 76%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--accent2);
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent2) 20%, transparent);
+    }
+
+    /* Hero */
+    header.hero{
+      padding:46px 0 18px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:22px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){
+      .heroGrid{grid-template-columns:1fr; }
+    }
+    .card{
+      background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 90%, transparent), color-mix(in oklab, var(--panel2) 85%, transparent));
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card .pad{padding:22px}
+    .card .pad.tight{padding:18px}
+    .heroTitle{
+      font-size: clamp(28px, 3.2vw, 46px);
+      letter-spacing:-0.6px;
+      margin: 10px 0 10px;
+      line-height:1.06;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.55;
+      margin:0 0 16px;
+      max-width: 62ch;
+    }
+    .ctaRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    .chips{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 16px;
+    }
+
+    /* Proof strip */
+    .proof{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 900px){
+      .proof{grid-template-columns: repeat(2, 1fr)}
+    }
+    .stat{
+      background: color-mix(in oklab, var(--chip) 70%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      border-radius: var(--radius);
+      padding:14px 14px 12px;
+      min-height:72px;
+    }
+    .stat b{font-size:18px; letter-spacing:-.2px}
+    .stat p{
+      margin:6px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    /* Profile */
+    .profile{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+    .photo{
+      aspect-ratio: 1/1;
+      border-radius: 18px;
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      overflow:hidden;
+      background:
+        radial-gradient(500px 240px at 50% 10%, rgba(122,162,255,.25), transparent 55%),
+        radial-gradient(420px 240px at 20% 90%, rgba(99,230,190,.22), transparent 55%),
+        linear-gradient(135deg, color-mix(in oklab, var(--panel) 70%, transparent), color-mix(in oklab, var(--panel2) 70%, transparent));
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+    }
+    .photo img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      filter: contrast(1.02) saturate(1.05);
+    }
+    .photo .fallback{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      padding:16px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .photo .fallback code{font-family:var(--mono)}
+    .profile h3{
+      margin:14px 0 6px;
+      font-size:16px;
+      letter-spacing:-.2px;
+    }
+    .profile .mini{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      margin:0 0 10px;
+    }
+    .profile .links{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top:auto;
+      padding-top:12px;
+    }
+
+    /* Sections */
+    section{padding: 18px 0}
+    .sectionTitle{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      margin: 26px 0 14px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.2px;
+    }
+    .sectionTitle span{
+      color:var(--muted2);
+      font-size:12px;
+    }
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){ .grid2{grid-template-columns:1fr} }
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    @media (max-width: 1000px){ .grid3{grid-template-columns: 1fr} }
+    .box{
+      background: color-mix(in oklab, var(--panel) 88%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      border-radius: var(--radius2);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+    }
+    .box h3{
+      margin:0 0 6px;
+      font-size:14px;
+      letter-spacing:-.1px;
+    }
+    .box p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .tagrow{
+      display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;
+    }
+    .tag{
+      font-size:12px;
+      padding:6px 9px;
+      border-radius:999px;
+      background: color-mix(in oklab, var(--chip) 70%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      color:var(--muted);
+    }
+
+    /* Case studies */
+    .cases{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:14px;
+    }
+    @media (max-width: 900px){ .cases{grid-template-columns:1fr} }
+    details.case{
+      background: color-mix(in oklab, var(--panel) 88%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      border-radius: var(--radius2);
+      overflow:hidden;
+    }
+    details.case > summary{
+      list-style:none;
+      cursor:pointer;
+      padding:16px;
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:10px;
+      user-select:none;
+    }
+    details.case > summary::-webkit-details-marker{display:none}
+    .caseTitle{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .caseTitle strong{font-size:14px; letter-spacing:-.1px}
+    .caseTitle span{font-size:12px; color:var(--muted)}
+    .caseMeta{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+      margin-left:auto;
+    }
+    .chip{
+      font-size:12px;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background: color-mix(in oklab, var(--chip) 70%, transparent);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .caseBody{
+      padding: 0 16px 16px;
+      border-top:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+    }
+    .caseBody h4{
+      margin:14px 0 6px;
+      font-size:12px;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+      color:var(--muted2);
+    }
+    .caseBody ul{
+      margin:8px 0 0 18px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .caseBody .miniGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 720px){ .caseBody .miniGrid{grid-template-columns:1fr} }
+
+    /* Architecture diagram */
+    .diagramWrap{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){ .diagramWrap{grid-template-columns:1fr} }
+    .diagram{
+      padding:14px;
+      border-radius: var(--radius2);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background:
+        radial-gradient(800px 380px at 30% 15%, rgba(122,162,255,.18), transparent 55%),
+        radial-gradient(800px 380px at 90% 90%, rgba(99,230,190,.12), transparent 55%),
+        color-mix(in oklab, var(--panel) 88%, transparent);
+      overflow:hidden;
+    }
+    .diagram svg{width:100%; height:auto; display:block}
+    .node{
+      cursor:pointer;
+      transition: transform .14s ease, filter .14s ease;
+    }
+    .node:hover{ transform: translateY(-1px); filter: drop-shadow(0 10px 16px rgba(0,0,0,.25)); }
+    .legend{
+      padding:16px;
+      border-radius: var(--radius2);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background: color-mix(in oklab, var(--panel) 88%, transparent);
+    }
+    .legend h3{margin:0 0 8px; font-size:14px}
+    .legend p{margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.55}
+    .legend .kv{
+      display:grid; grid-template-columns: 1fr; gap:10px;
+      margin-top:10px;
+    }
+    .kv .row{
+      padding:10px;
+      border-radius: 14px;
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background: color-mix(in oklab, var(--chip) 72%, transparent);
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+    .kv .row b{color:var(--text)}
+
+    /* Terminal */
+    .terminal{
+      background: #070b12;
+      border:1px solid #17233a;
+      border-radius: var(--radius2);
+      overflow:hidden;
+    }
+    [data-theme="light"] .terminal{
+      background: #0b1220;
+      border-color: #1e2d4b;
+    }
+    .termTop{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 12px;
+      border-bottom:1px solid #17233a;
+      font-family:var(--mono);
+      font-size:12px;
+      color:#a8b6d8;
+    }
+    .dots{display:flex; gap:6px; align-items:center}
+    .dots i{
+      width:10px;height:10px;border-radius:999px; display:inline-block;
+      background:#2b3957;
+    }
+    .termBody{
+      padding:14px 12px 16px;
+      font-family:var(--mono);
+      font-size:12.5px;
+      line-height:1.6;
+      color:#d9e3ff;
+      min-height: 156px;
+      white-space:pre-wrap;
+    }
+    .termBody .muted{color:#9fb0cf}
+    .termBody .ok{color:#63e6be}
+    .termBody .warn{color:#ffcc66}
+
+    /* Footer */
+    footer{
+      padding: 26px 0 40px;
+      color: var(--muted2);
+      font-size:12px;
+    }
+    .footerRow{
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      flex-wrap:wrap;
+      border-top:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      padding-top:16px;
+    }
+    .kbd{
+      font-family:var(--mono);
+      font-size:11px;
+      padding:4px 7px;
+      border-radius:9px;
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background: color-mix(in oklab, var(--chip) 72%, transparent);
+      color:var(--muted);
+    }
+
+    /* Modal */
+    dialog{
+      width:min(720px, 94vw);
+      border:none;
+      border-radius: 18px;
+      padding:0;
+      background: color-mix(in oklab, var(--panel) 92%, transparent);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+    dialog::backdrop{
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(5px);
+    }
+    .modalHead{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding:14px 14px 12px;
+      border-bottom:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+    }
+    .modalHead strong{font-size:14px}
+    .modalBody{padding:14px}
+    .modalBody p{margin:0 0 8px; color:var(--muted); line-height:1.6; font-size:13px}
+    .modalBody ul{margin:8px 0 0 18px; color:var(--muted); font-size:13px; line-height:1.55}
+    .x{
+      border:none;
+      background: transparent;
+      color: var(--muted);
+      padding:8px 10px;
+      border-radius:12px;
+      cursor:pointer;
+    }
+    .x:hover{ background: color-mix(in oklab, var(--chip) 72%, transparent); color:var(--text) }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{scroll-behavior:auto !important; transition:none !important; animation:none !important}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="inner">
+        <a class="brand" href="#top" aria-label="Home">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="name">
+            <strong>Jay Dave</strong>
+            <span>Agentic AI • RAG • AWS Orchestration</span>
+          </div>
+        </a>
+
+        <nav aria-label="Primary navigation">
+          <a class="navlink" href="#work">Work</a>
+          <a class="navlink" href="#cases">Case Studies</a>
+          <a class="navlink" href="#blueprint">Blueprint</a>
+          <a class="navlink" href="#projects">Projects</a>
+          <a class="navlink" href="#contact">Contact</a>
+          <button class="btn ghost" id="themeBtn" title="Toggle theme" type="button">Theme</button>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <main id="top" class="wrap">
+    <header class="hero">
+      <div class="heroGrid">
+        <div class="card">
+          <div class="pad">
+            <span class="pill"><span class="dot"></span> Available for backend / AI platform roles</span>
+            <h1 class="heroTitle">Building agentic systems that ship</h1>
+            <p class="sub">
+              I build agentic AI workflows that move from <b>prompt → planning → tools → verifiable outputs</b>.
+              My focus is production outcomes: <b>retrieval quality</b>, <b>latency</b>, <b>reliability</b>, and <b>auditability</b> — not demos.
+            </p>
+
+            <div class="ctaRow">
+              <a class="btn primary" href="#cases">View case studies</a>
+              <a class="btn" href="Jay_Dave_2026_resume.pdf" download>Download resume (PDF)</a>
+              <a class="btn" href="https://www.credly.com/badges/5ee43885-48c2-4c68-b878-646dda1c43ff/linked_in_profile" target="_blank" rel="noreferrer">AWS Credly</a>
+              <a class="btn" href="https://github.com/davejay1999" target="_blank" rel="noreferrer">GitHub</a>
+              <a class="btn" href="https://www.linkedin.com/in/davejay1999/" target="_blank" rel="noreferrer">LinkedIn</a>
+            </div>
+
+            <div class="chips" aria-label="Core focus areas">
+              <span class="tag">Agentic orchestration (SQS / Redis)</span>
+              <span class="tag">RAG (vector + search + rerank)</span>
+              <span class="tag">Microservices on AWS</span>
+              <span class="tag">CI/CD (Jenkins / Docker / EKS)</span>
+            </div>
+
+            <div class="sectionTitle" style="margin-top:18px">
+              <h2 style="font-size:14px; margin:0">Proof of impact</h2>
+              <span>Numbers recruiters ask about</span>
+            </div>
+
+            <div class="proof" role="list">
+              <div class="stat" role="listitem">
+                <b data-count="30">0</b><b>%</b>
+                <p>Retrieval accuracy improvement via RAG + reranking (reported impact)</p>
+              </div>
+              <div class="stat" role="listitem">
+                <b data-count="40">0</b><b>%</b>
+                <p>Inter-service latency reduction using event-driven orchestration</p>
+              </div>
+              <div class="stat" role="listitem">
+                <b data-count="25">0</b><b>%</b>
+                <p>Faster release cycles through CI/CD automation + rollout gates</p>
+              </div>
+              <div class="stat" role="listitem">
+                <b data-count="300">0</b><b>K</b>
+                <p>Daily call volume scaled (50K → 300K) with performance tuning</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="card profile" aria-label="Profile card">
+          <div class="pad tight">
+            <div class="photo" aria-label="Profile photo">
+              <!-- Place your image in the same folder and name it jay.jpg (or update src). -->
+              <img src="jay.jpg" alt="Jay Dave" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="fallback" style="display:none">
+                Add your photo as <code>jay.jpg</code> in this folder<br/>or update the <code>src</code> in <code>index.html</code>.
+              </div>
+            </div>
+
+            <h3>Jay Dave</h3>
+            <p class="mini">
+              Software Engineer focused on agentic AI systems: RAG pipelines, event-driven orchestration, and
+              production-grade microservices on AWS.
+            </p>
+
+            <div class="tagrow">
+              <span class="chip">New York, USA</span>
+              <span class="chip">Python • Java • TypeScript</span>
+              <span class="chip">AWS • Docker • Kubernetes</span>
+            </div>
+
+            <div class="links">
+              <a class="btn" href="mailto:davejay1999@gmail.com">Email</a>
+              <a class="btn" href="tel:+15513284697">Call</a>
+              <a class="btn" href="#contact">Contact form</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <section id="work">
+      <div class="sectionTitle">
+        <h2>What I build</h2>
+        <span>Systems language, not buzzwords</span>
+      </div>
+
+      <div class="grid2">
+        <div class="box">
+          <h3>RAG pipelines with measurable quality</h3>
+          <p>
+            Ground outputs using hybrid retrieval (vector + keyword search), reranking, and disciplined citations.
+            I treat retrieval as a product: evals, failure modes, and regression detection.
+          </p>
+          <div class="tagrow">
+            <span class="tag">Vector search</span><span class="tag">Elasticsearch</span><span class="tag">Rerank</span><span class="tag">Eval harness</span>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Agentic orchestration that scales</h3>
+          <p>
+            Coordinator → specialists pattern, with clear tool contracts. Event-driven fan-out via SQS,
+            bounded state in Redis, and reliability defaults (idempotency, retries, timeouts, backpressure).
+          </p>
+          <div class="tagrow">
+            <span class="tag">AWS SQS</span><span class="tag">Redis session state</span><span class="tag">Idempotency</span><span class="tag">DLQ</span>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Production delivery and rollout safety</h3>
+          <p>
+            CI/CD for fast iteration without breaking behavior: automated tests + eval gates,
+            staged rollouts, quick rollback, and traceability for prompt/tool changes.
+          </p>
+          <div class="tagrow">
+            <span class="tag">Jenkins</span><span class="tag">Docker</span><span class="tag">EKS</span><span class="tag">ArgoCD</span>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Performance & reliability engineering</h3>
+          <p>
+            Database/query optimization, caching strategy, and operational clarity. I optimize for P95 latency,
+            throughput, and predictable failure behavior.
+          </p>
+          <div class="tagrow">
+            <span class="tag">PostgreSQL</span><span class="tag">Redis caching</span><span class="tag">Tracing</span><span class="tag">SLOs</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cases">
+      <div class="sectionTitle">
+        <h2>Case studies</h2>
+        <span>Click to expand (problem → decisions → results)</span>
+      </div>
+
+      <div class="cases">
+        <details class="case">
+          <summary>
+            <div class="caseTitle">
+              <strong>Agentic orchestration on AWS (Coordinator ↔ Specialists)</strong>
+              <span>Event-driven fan-out, bounded state, deterministic retries</span>
+            </div>
+            <div class="caseMeta">
+              <span class="chip">SQS</span>
+              <span class="chip">Redis</span>
+              <span class="chip">Idempotency</span>
+            </div>
+          </summary>
+          <div class="caseBody">
+            <div class="miniGrid">
+              <div>
+                <h4>Problem</h4>
+                <ul>
+                  <li>Multi-step agent workflows became slow and unpredictable as the number of tools and sub-tasks increased.</li>
+                  <li>Needed scalable coordination with controlled state and clear failure handling.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Approach</h4>
+                <ul>
+                  <li>Coordinator issues tasks to specialist agents via SQS; each handler is idempotent and retry-safe.</li>
+                  <li>Redis stores session state with TTL and explicit schemas to prevent drift.</li>
+                  <li>DLQs capture poison messages; backpressure via queue depth + rate limits.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Reliability defaults</h4>
+                <ul>
+                  <li>Idempotency keys per step</li>
+                  <li>Timeouts + retries with jitter</li>
+                  <li>Deterministic replay hooks (audit logs)</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Results</h4>
+                <ul>
+                  <li>Reduced inter-service latency by ~40% (reported impact).</li>
+                  <li>Improved system behavior under load using retries/backpressure and bounded memory.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>
+            <div class="caseTitle">
+              <strong>RAG retrieval quality improvements</strong>
+              <span>Hybrid retrieval + reranking + eval discipline</span>
+            </div>
+            <div class="caseMeta">
+              <span class="chip">Vector</span>
+              <span class="chip">Search</span>
+              <span class="chip">Rerank</span>
+            </div>
+          </summary>
+          <div class="caseBody">
+            <div class="miniGrid">
+              <div>
+                <h4>Problem</h4>
+                <ul>
+                  <li>LLM answers were inconsistent when key documents were missed or irrelevant passages were retrieved.</li>
+                  <li>Needed higher precision while maintaining latency constraints.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Approach</h4>
+                <ul>
+                  <li>Hybrid retrieval: vector recall + keyword precision.</li>
+                  <li>Reranking to prioritize evidence; citation discipline to prevent unsupported claims.</li>
+                  <li>Evaluation: track error buckets (missed retrieval vs. bad ranking vs. synthesis).</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Metrics</h4>
+                <ul>
+                  <li>Precision/recall style checks on curated queries</li>
+                  <li>Latency budgets (P95)</li>
+                  <li>Regression detection via golden sets</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Results</h4>
+                <ul>
+                  <li>Improved retrieval accuracy by ~30% (reported impact).</li>
+                  <li>More stable answers due to better evidence selection and citations.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>
+            <div class="caseTitle">
+              <strong>CI/CD for agent changes (safe iteration)</strong>
+              <span>Tests + eval gates + staged rollout</span>
+            </div>
+            <div class="caseMeta">
+              <span class="chip">Jenkins</span>
+              <span class="chip">Docker</span>
+              <span class="chip">EKS</span>
+            </div>
+          </summary>
+          <div class="caseBody">
+            <div class="miniGrid">
+              <div>
+                <h4>Problem</h4>
+                <ul>
+                  <li>Agent behavior can change unexpectedly with prompt/tool edits.</li>
+                  <li>Needed a release process that prevents silent regressions.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Approach</h4>
+                <ul>
+                  <li>Multi-branch pipelines: build → test → eval → deploy.</li>
+                  <li>Rollout gates and quick rollback for risky changes.</li>
+                  <li>Artifact versioning to correlate behavior with commits.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Quality controls</h4>
+                <ul>
+                  <li>Unit + integration tests</li>
+                  <li>Eval suite on golden queries</li>
+                  <li>Smoke tests in staging before prod</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Results</h4>
+                <ul>
+                  <li>Accelerated release cycles by ~25% (reported impact).</li>
+                  <li>Improved confidence in deploying prompt/tool changes.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>
+            <div class="caseTitle">
+              <strong>Scaling daily call volume (50K → 300K)</strong>
+              <span>Performance tuning without adding infra cost</span>
+            </div>
+            <div class="caseMeta">
+              <span class="chip">DB</span>
+              <span class="chip">Batching</span>
+              <span class="chip">Queues</span>
+            </div>
+          </summary>
+          <div class="caseBody">
+            <div class="miniGrid">
+              <div>
+                <h4>Problem</h4>
+                <ul>
+                  <li>Call/SMS workloads spiked under peak loads, causing latency and throughput issues.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Approach</h4>
+                <ul>
+                  <li>Batch processing for requests to reduce per-call overhead.</li>
+                  <li>DB optimizations: indexing and connection pooling.</li>
+                  <li>Horizontal scaling using task queues (e.g., Celery/RabbitMQ pattern).</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Results</h4>
+                <ul>
+                  <li>Reduced latency by ~30% and scaled from ~50K to ~300K daily calls.</li>
+                  <li>Maintained cost by improving efficiency rather than adding capacity.</li>
+                </ul>
+              </div>
+              <div>
+                <h4>Next steps</h4>
+                <ul>
+                  <li>Load-test harness + capacity planning models</li>
+                  <li>Queue depth SLOs + autoscaling policies</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="blueprint">
+      <div class="sectionTitle">
+        <h2>Agentic workflow blueprint</h2>
+        <span>Click nodes to see constraints + failure modes</span>
+      </div>
+
+      <div class="diagramWrap">
+        <div class="diagram" aria-label="Interactive architecture diagram">
+          <svg viewBox="0 0 1080 520" role="img" aria-label="Coordinator to specialists architecture diagram">
+            <!-- Links -->
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="rgba(122,162,255,.9)"/>
+                <stop offset="1" stop-color="rgba(99,230,190,.9)"/>
+              </linearGradient>
+              <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="rgba(0,0,0,.35)"/>
+              </filter>
+            </defs>
+
+            <path d="M 250 165 C 360 120, 420 120, 520 165" fill="none" stroke="url(#g1)" stroke-width="3" opacity=".9"/>
+            <path d="M 250 265 C 360 290, 420 290, 520 265" fill="none" stroke="url(#g1)" stroke-width="3" opacity=".7"/>
+            <path d="M 560 165 C 690 120, 740 120, 860 165" fill="none" stroke="url(#g1)" stroke-width="3" opacity=".85"/>
+            <path d="M 560 265 C 690 290, 740 290, 860 265" fill="none" stroke="url(#g1)" stroke-width="3" opacity=".7"/>
+
+            <!-- Coordinator -->
+            <g class="node" data-node="coordinator" filter="url(#soft)">
+              <rect x="150" y="180" rx="22" ry="22" width="250" height="120" fill="rgba(15,22,36,.9)" stroke="rgba(215,223,239,.18)" stroke-width="2"/>
+              <text x="185" y="232" fill="rgba(231,238,252,.98)" font-size="22" font-weight="700">Coordinator</text>
+              <text x="185" y="262" fill="rgba(159,176,207,.95)" font-size="14">Plans, routes, enforces constraints</text>
+            </g>
+
+            <!-- Specialist: Retrieval -->
+            <g class="node" data-node="retrieval" filter="url(#soft)">
+              <rect x="480" y="120" rx="22" ry="22" width="260" height="120" fill="rgba(15,22,36,.9)" stroke="rgba(215,223,239,.18)" stroke-width="2"/>
+              <text x="515" y="172" fill="rgba(231,238,252,.98)" font-size="18" font-weight="700">Retrieval Specialist</text>
+              <text x="515" y="200" fill="rgba(159,176,207,.95)" font-size="14">vector_search + elastic_query</text>
+            </g>
+
+            <!-- Specialist: Validation -->
+            <g class="node" data-node="validation" filter="url(#soft)">
+              <rect x="480" y="250" rx="22" ry="22" width="260" height="120" fill="rgba(15,22,36,.9)" stroke="rgba(215,223,239,.18)" stroke-width="2"/>
+              <text x="515" y="302" fill="rgba(231,238,252,.98)" font-size="18" font-weight="700">Validation Specialist</text>
+              <text x="515" y="330" fill="rgba(159,176,207,.95)" font-size="14">citation checks + policy gates</text>
+            </g>
+
+            <!-- Tools -->
+            <g class="node" data-node="tools" filter="url(#soft)">
+              <rect x="820" y="120" rx="22" ry="22" width="230" height="120" fill="rgba(15,22,36,.9)" stroke="rgba(215,223,239,.18)" stroke-width="2"/>
+              <text x="850" y="172" fill="rgba(231,238,252,.98)" font-size="18" font-weight="700">Tools</text>
+              <text x="850" y="200" fill="rgba(159,176,207,.95)" font-size="14">rerank • trace • cache</text>
+            </g>
+
+            <!-- Memory / Audit -->
+            <g class="node" data-node="memory" filter="url(#soft)">
+              <rect x="820" y="250" rx="22" ry="22" width="230" height="120" fill="rgba(15,22,36,.9)" stroke="rgba(215,223,239,.18)" stroke-width="2"/>
+              <text x="850" y="302" fill="rgba(231,238,252,.98)" font-size="18" font-weight="700">Memory & Audit</text>
+              <text x="850" y="330" fill="rgba(159,176,207,.95)" font-size="14">Redis state + logs</text>
+            </g>
+
+            <!-- Footer text -->
+            <text x="150" y="460" fill="rgba(159,176,207,.95)" font-size="13">
+              Pattern: Coordinator → Specialists → Tool calls → Bounded state → Audit trail
+            </text>
+          </svg>
+        </div>
+
+        <div class="legend" aria-label="Blueprint legend">
+          <h3>How this behaves under real constraints</h3>
+          <p>
+            This pattern keeps “agent behavior” predictable: the coordinator is the only component allowed to orchestrate
+            multi-step work, while specialists operate under strict tool contracts and latency budgets.
+          </p>
+
+          <div class="kv" id="nodeInfo">
+            <div class="row"><b>Tip:</b> Click a node in the diagram to view constraints, failure modes, and mitigations.</div>
+            <div class="row"><b>Default constraints:</b> latency budget, tool policy, retries/timeouts, idempotency.</div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn" type="button" id="playDemo">Run terminal demo</button>
+            <a class="btn" href="#projects">Jump to projects</a>
+          </div>
+
+          <div style="margin-top:12px" class="terminal" aria-label="Terminal demo">
+            <div class="termTop">
+              <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span>jay@agent-runtime:~</span>
+              <span class="muted">demo</span>
+            </div>
+            <div class="termBody" id="term"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="sectionTitle">
+        <h2>Projects</h2>
+        <span>Curated, not everything</span>
+      </div>
+
+      <div class="grid3">
+        <div class="box">
+          <h3>InsightHub</h3>
+          <p>A knowledge platform focused on personalization, retention, and user-controlled summaries and exports.</p>
+          <div class="tagrow">
+            <span class="tag">Product</span><span class="tag">UX</span><span class="tag">Export to PDF</span>
+          </div>
+          <div class="ctaRow" style="margin-top:12px">
+            <a class="btn" href="https://github.com/davejay1999/InsightHub" target="_blank" rel="noreferrer">Repo</a>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Agentic RAG Blueprint (this site)</h3>
+          <p>Single-page portfolio designed to show real engineering: constraints, architecture, and reliability defaults.</p>
+          <div class="tagrow">
+            <span class="tag">Coordinator</span><span class="tag">SQS</span><span class="tag">Redis</span><span class="tag">RAG</span>
+          </div>
+          <div class="ctaRow" style="margin-top:12px">
+            <a class="btn" href="#blueprint">See blueprint</a>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Eval-driven retrieval improvements</h3>
+          <p>Template for measuring retrieval quality and preventing regressions with golden sets and failure buckets.</p>
+          <div class="tagrow">
+            <span class="tag">Evals</span><span class="tag">Rerank</span><span class="tag">Latency budgets</span>
+          </div>
+          <div class="ctaRow" style="margin-top:12px">
+            <a class="btn" href="#cases">Read case study</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="sectionTitle">
+        <h2>Contact</h2>
+        <span>Fastest: email</span>
+      </div>
+
+      <div class="grid2">
+        <div class="box">
+          <h3>Reach me</h3>
+          <p>
+            Email is the fastest channel. If you’re evaluating agentic systems, I can help you avoid common failure modes:
+            undefined tool contracts, no evals, no audit trail, and orchestration that collapses at scale.
+          </p>
+          <div class="tagrow">
+            <span class="tag">davejay1999@gmail.com</span>
+            <span class="tag">+1 (551) 328-4697</span>
+          </div>
+          <div class="ctaRow" style="margin-top:12px">
+            <a class="btn primary" href="mailto:davejay1999@gmail.com?subject=Portfolio%20Inquiry%20—%20Jay%20Dave">Email me</a>
+            <a class="btn" href="tel:+15513284697">Call</a>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Quick message</h3>
+          <p style="margin-bottom:10px">This opens your email client with a pre-filled draft.</p>
+          <form id="contactForm">
+            <label style="display:block; font-size:12px; color:var(--muted2); margin:8px 0 6px;">Your name</label>
+            <input required name="name" style="width:100%; padding:11px 12px; border-radius:12px; border:1px solid color-mix(in oklab, var(--line) 70%, transparent); background: color-mix(in oklab, var(--panel2) 75%, transparent); color:var(--text);" />
+
+            <label style="display:block; font-size:12px; color:var(--muted2); margin:10px 0 6px;">Your email</label>
+            <input required type="email" name="email" style="width:100%; padding:11px 12px; border-radius:12px; border:1px solid color-mix(in oklab, var(--line) 70%, transparent); background: color-mix(in oklab, var(--panel2) 75%, transparent); color:var(--text);" />
+
+            <label style="display:block; font-size:12px; color:var(--muted2); margin:10px 0 6px;">Message</label>
+            <textarea required name="msg" rows="4" style="width:100%; padding:11px 12px; border-radius:12px; border:1px solid color-mix(in oklab, var(--line) 70%, transparent); background: color-mix(in oklab, var(--panel2) 75%, transparent); color:var(--text); resize:vertical;"></textarea>
+
+            <div class="ctaRow" style="margin-top:12px">
+              <button class="btn primary" type="submit">Generate email</button>
+              <a class="btn" href="Jay_Dave_2026_resume.pdf" download>Resume PDF</a>
+            </div>
+            <p style="margin:10px 0 0; color:var(--muted2); font-size:12px">
+              Tip: add <span class="kbd">role</span>, <span class="kbd">team</span>, and <span class="kbd">timeline</span> in the message for faster scheduling.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footerRow">
+        <div>© <span id="year"></span> Jay Dave • Single-page, GitHub Pages friendly</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <span class="kbd">/</span> Quick nav: <span class="kbd">Work</span> <span class="kbd">Cases</span> <span class="kbd">Blueprint</span> <span class="kbd">Projects</span> <span class="kbd">Contact</span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <dialog id="nodeModal" aria-label="Node details dialog">
+    <div class="modalHead">
+      <strong id="modalTitle">Node</strong>
+      <button class="x" id="closeModal" type="button" aria-label="Close">Close</button>
+    </div>
+    <div class="modalBody" id="modalBody"></div>
+  </dialog>
+
+  <script>
+    // ---------- Theme ----------
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+
+    function setTheme(t){
+      document.body.dataset.theme = t;
+      localStorage.setItem('theme', t);
+      themeBtn.textContent = (t === 'light') ? 'Theme: Light' : 'Theme: Dark';
+    }
+    const savedTheme = localStorage.getItem('theme');
+    setTheme(savedTheme || 'dark');
+    themeBtn.addEventListener('click', () => setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+    // ---------- Active nav + smooth scroll ----------
+    const links = [...document.querySelectorAll('.navlink')];
+    const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+    function onScroll(){
+      const y = window.scrollY + 120;
+      let active = null;
+      for(const s of sections){
+        if(s.offsetTop <= y) active = s;
+      }
+      links.forEach(a => a.classList.toggle('active', active && a.getAttribute('href') === '#'+active.id));
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+
+    // ---------- Count-up stats (once) ----------
+    const stats = [...document.querySelectorAll('[data-count]')];
+    let counted = false;
+
+    function animateCounts(){
+      if(counted) return;
+      const hero = document.querySelector('.proof');
+      const r = hero.getBoundingClientRect();
+      if(r.top < window.innerHeight - 80){
+        counted = true;
+        stats.forEach(el => {
+          const target = Number(el.dataset.count || 0);
+          const isLarge = target >= 200;
+          const duration = isLarge ? 1200 : 900;
+          const start = performance.now();
+          function tick(now){
+            const t = Math.min(1, (now - start)/duration);
+            const val = Math.round(target * (0.08 + 0.92*t));
+            el.textContent = Math.min(val, target);
+            if(t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+    }
+    window.addEventListener('scroll', animateCounts, {passive:true});
+    animateCounts();
+
+    // ---------- Node modal + legend info ----------
+    const nodeModal = document.getElementById('nodeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const closeModal = document.getElementById('closeModal');
+    const nodeInfo = document.getElementById('nodeInfo');
+
+    const NODE_DATA = {
+      coordinator: {
+        title: 'Coordinator',
+        desc: 'The only component allowed to orchestrate multi-step work. It enforces constraints and prevents tool chaos.',
+        bullets: [
+          'Inputs: user goal + constraints (latency budget, confidence threshold, tool policy)',
+          'Outputs: task plan + specialist routing + retry/timeout strategy',
+          'Guardrails: tool allowlist, maximum steps, evidence requirements'
+        ],
+        failure: [
+          'Failure mode: uncontrolled tool loops → Mitigation: max-step budget + deterministic plan',
+          'Failure mode: over-orchestration overhead → Mitigation: cache, route fewer steps, collapse trivial tasks'
+        ]
+      },
+      retrieval: {
+        title: 'Retrieval Specialist',
+        desc: 'Responsible for evidence selection. Separates recall vs precision and returns citations-ready chunks.',
+        bullets: [
+          'Hybrid retrieval: vector recall + keyword precision',
+          'Rerank to prioritize high-signal passages',
+          'Return: sources + spans + confidence + retrieval traces'
+        ],
+        failure: [
+          'Failure mode: missed key doc → Mitigation: broaden recall, query rewriting, fallback to keyword',
+          'Failure mode: irrelevant chunks → Mitigation: reranking + filters + chunking strategy'
+        ]
+      },
+      validation: {
+        title: 'Validation Specialist',
+        desc: 'Prevents “confident nonsense” by checking claims against evidence and enforcing output policy.',
+        bullets: [
+          'Citation checks (each claim must map to evidence)',
+          'Policy gates (what tools/data are allowed)',
+          'Deterministic replay hooks via logs/traces'
+        ],
+        failure: [
+          'Failure mode: false confidence → Mitigation: force abstain / request more evidence',
+          'Failure mode: brittle rules → Mitigation: test suite + eval-driven updates'
+        ]
+      },
+      tools: {
+        title: 'Tools',
+        desc: 'Explicit operations used by specialists—kept narrow to maintain predictability.',
+        bullets: [
+          'rerank(): reorder candidates using a model',
+          'trace(): record tool calls, latency, and outcomes',
+          'cache(): reduce repeated work under tight budgets'
+        ],
+        failure: [
+          'Failure mode: tool misuse → Mitigation: allowlist + schemas + validation',
+          'Failure mode: hidden side effects → Mitigation: idempotent tool design + audit logs'
+        ]
+      },
+      memory: {
+        title: 'Memory & Audit',
+        desc: 'Stores bounded state (fast) and durable logs (trust). Prevents drift and enables debugging.',
+        bullets: [
+          'Redis session state with TTL and explicit schemas',
+          'Durable logs for tool calls + outputs + errors',
+          'Supports deterministic replay for incident review'
+        ],
+        failure: [
+          'Failure mode: state drift → Mitigation: TTL + schema validation + explicit write rules',
+          'Failure mode: missing provenance → Mitigation: trace everything and keep minimal-but-sufficient audit'
+        ]
+      }
+    };
+
+    function renderNodeInfo(key){
+      const d = NODE_DATA[key];
+      if(!d) return;
+      nodeInfo.innerHTML = `
+        <div class="row"><b>${d.title}:</b> ${d.desc}</div>
+        <div class="row"><b>Key responsibilities:</b><br/>• ${d.bullets.join('<br/>• ')}</div>
+        <div class="row"><b>Failure modes & mitigations:</b><br/>• ${d.failure.join('<br/>• ')}</div>
+      `;
+    }
+
+    document.querySelectorAll('.node').forEach(n => {
+      n.addEventListener('click', () => {
+        const key = n.dataset.node;
+        const d = NODE_DATA[key];
+        if(!d) return;
+
+        modalTitle.textContent = d.title;
+        modalBody.innerHTML = `
+          <p>${d.desc}</p>
+          <p><b>Key responsibilities</b></p>
+          <ul>${d.bullets.map(x => `<li>${x}</li>`).join('')}</ul>
+          <p style="margin-top:10px"><b>Failure modes & mitigations</b></p>
+          <ul>${d.failure.map(x => `<li>${x}</li>`).join('')}</ul>
+        `;
+        renderNodeInfo(key);
+        nodeModal.showModal();
+      });
+    });
+
+    closeModal.addEventListener('click', () => nodeModal.close());
+    nodeModal.addEventListener('click', (e) => {
+      const rect = nodeModal.getBoundingClientRect();
+      const inDialog = (rect.top <= e.clientY && e.clientY <= rect.bottom && rect.left <= e.clientX && e.clientX <= rect.right);
+      if(!inDialog) nodeModal.close();
+    });
+
+    // ---------- Terminal demo ----------
+    const term = document.getElementById('term');
+    const playDemo = document.getElementById('playDemo');
+
+    const DEMO_LINES = [
+      {t: '$ run --goal "Improve retrieval quality" --constraints "<300ms P95"', cls:'muted'},
+      {t: '→ Plan: route to Retriever → validate → cache → respond', cls:''},
+      {t: '→ Tools: vector_search(), elastic_query(), rerank(), trace()', cls:''},
+      {t: '→ Orchestration: SQS fan-out, Redis session state', cls:''},
+      {t: '→ Output: cited answer + audit trail', cls:''},
+      {t: 'status: READY', cls:'ok'},
+      {t: '', cls:''},
+      {t: '$ eval --suite golden_queries --metrics "precision, recall, latency_p95"', cls:'muted'},
+      {t: 'latency_p95: 284ms   precision: ↑   recall: ↑', cls:'ok'},
+      {t: 'notes: rerank improved high-signal passage selection; added fallback to keyword for edge cases', cls:''},
+      {t: '', cls:''},
+      {t: '$ deploy --env prod --gate "eval_passed && smoke_ok"', cls:'muted'},
+      {t: 'rollout: canary 10% → 50% → 100%', cls:''},
+      {t: 'trace_id: 8f2c…  audit: attached', cls:'ok'},
+      {t: 'done.', cls:'ok'}
+    ];
+
+    function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+    async function typeLine(text, cls){
+      const line = document.createElement('div');
+      if(cls) line.className = cls;
+      term.appendChild(line);
+      for(let i=0; i<text.length; i++){
+        line.textContent += text[i];
+        await sleep(10 + Math.random()*12);
+      }
+      await sleep(110);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    let playing = false;
+    async function runDemo(){
+      if(playing) return;
+      playing = true;
+      term.textContent = '';
+      for(const l of DEMO_LINES){
+        await typeLine(l.t, l.cls);
+      }
+      playing = false;
+    }
+    playDemo.addEventListener('click', runDemo);
+    runDemo();
+
+    // ---------- Contact form (mailto generator) ----------
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = data.get('name');
+      const email = data.get('email');
+      const msg = data.get('msg');
+
+      const subject = encodeURIComponent(`Portfolio Inquiry — ${name}`);
+      const body = encodeURIComponent(
+`Hi Jay,
+
+My name is ${name} (${email}).
+
+${msg}
+
+— ${name}`
+      );
+      window.location.href = `mailto:davejay1999@gmail.com?subject=${subject}&body=${body}`;
+    });
+
+    // ---------- Year ----------
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
